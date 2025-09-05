@@ -1,4 +1,4 @@
-🔐 Fluxo de Autenticação com JWT e Redis
+#🔐 Fluxo de Autenticação com JWT e Redis
 
 Este projeto implementa e integra o fluxo completo de autenticação na API, permitindo:
 
@@ -10,7 +10,7 @@ Acesso a rotas protegidas via Bearer Token, validado em middleware dedicado.
 
 Logout seguro (POST /auth/logout) com gerenciamento de sessão no Redis, utilizando blacklist para tokens inválidos.
 
-🔑 Funcionalidades principais
+#🔑 Funcionalidades principais
 
 Middleware de autenticação que valida JWTs e checa blacklist no Redis.
 
@@ -20,7 +20,7 @@ Documentação atualizada no Swagger (/api-docs) com os endpoints de autenticaç
 
 Suporte à evolução do projeto, garantindo base sólida para novas funcionalidades.
 
-✅ Critérios de Aceite
+#✅ Critérios de Aceite
 
 Usuário pode registrar-se e logar, recebendo um JWT válido.
 
