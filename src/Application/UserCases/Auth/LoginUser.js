@@ -1,26 +1,26 @@
-const {
-  User,
-} = require("../../../Infrastructure/Persistence/Sequelize/models");
-const bcrypt = require("bcrypt");
-const JWTProvider = require("../../../Infrastructure/Providers/JWTProvider");
+const { User } = require("../../../Infrastructure/Persistence/Sequelize/models");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const config = require("../../../../config/config");
 
 class LoginUser {
-  async execute(loginInput) {
-    const user = await User.findOne({ where: { email: loginInput.email } });
-    if (!user) {
-      throw new Error("Invalid credentials");
-    }
+  async execute({ email, password }) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) throw new Error("Usuário ou senha inválidos");
 
-    const isPasswordValid = await bcrypt.compare(
-      loginInput.password,
-      user.password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error("Usuário ou senha inválidos");
+
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      config.jwt.secret,
+      { expiresIn: config.jwt.expiresIn }
     );
-    if (!isPasswordValid) {
-      throw new Error("Invalid credentials");
-    }
 
-    const token = JWTProvider.generateToken({ id: user.id, email: user.email });
-    return { token };
+    return {
+      user: { id: user.id, name: user.name, email: user.email },
+      token,
+    };
   }
 }
 

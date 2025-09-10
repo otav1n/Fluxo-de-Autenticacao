@@ -8,26 +8,25 @@ async function authMiddleware(req, res, next) {
       return res.status(401).json({ message: "Token ausente" });
     }
 
-    const parts = authHeader.split(" ");
-    if (parts.length !== 2 || parts[0] !== "Bearer") {
-      return res.status(401).json({ message: "Token inválido" });
+    const tokenParts = authHeader.split(" ");
+    if (tokenParts.length !== 2 || tokenParts[0] !== "Bearer") {
+      return res.status(401).json({ message: "Formato de token inválido" });
     }
 
-    const token = parts[1];
+    const token = tokenParts[1];
 
-    const isRevoked = await RedisTokenBlacklistRepository.exists(token);
-    if (isRevoked) {
-      return res.status(401).json({ message: "Token revogado" });
+    const isBlacklisted = await RedisTokenBlacklistRepository.has(token);
+    if (isBlacklisted) {
+      return res.status(401).json({ message: "Token inválido ou expirado" });
     }
 
-    const payload = JWTProvider.verifyToken(token);
-    req.user = payload;
+    const decoded = JWTProvider.verifyToken(token);
+    req.user = decoded;
 
     next();
   } catch (err) {
-    return res
-      .status(401)
-      .json({ message: "Falha na autenticação", error: err.message });
+    console.error(err);
+    return res.status(401).json({ message: "Token inválido" });
   }
 }
 

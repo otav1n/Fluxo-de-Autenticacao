@@ -27,6 +27,8 @@ class AuthController {
   static async logout(req, res, next) {
     try {
       const authHeader = req.headers["authorization"];
+      if (!authHeader) return res.status(401).json({ message: "Token ausente" });
+
       const token = authHeader.split(" ")[1];
 
       const decoded = JWTProvider.decodeToken(token);
