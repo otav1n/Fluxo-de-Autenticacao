@@ -1,6 +1,6 @@
 const express = require("express");
 const AuthController = require("../controllers/AuthController");
-const authMiddleware = require("../Middleware/AuthMiddleware");
+const authMiddleware = require("../middlewares/AuthMiddleware");
 
 const router = express.Router();
 
@@ -9,7 +9,9 @@ router.post("/login", AuthController.login);
 
 router.post("/logout", authMiddleware, AuthController.logout);
 router.get("/rota-protegida", authMiddleware, (req, res) => {
-  res.json({ message: `Olá ${req.user.email}, você acessou uma rota protegida!` });
+  res.json({
+    message: `Olá ${req.user.email}, você acessou uma rota protegida!`,
+  });
 });
 
 module.exports = router;
