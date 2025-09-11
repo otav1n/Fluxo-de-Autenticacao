@@ -2,6 +2,7 @@ const { User } = require("../../../Infrastructure/Persistence/Sequelize/models")
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../../../../config/config");
+const UserOutput = require("../../DTOs/UserOutput");
 
 class LoginUser {
   async execute({ email, password }) {
@@ -17,10 +18,12 @@ class LoginUser {
       { expiresIn: config.jwt.expiresIn }
     );
 
-    return {
-      user: { id: user.id, name: user.name, email: user.email },
+    return new UserOutput({
+      id: user.id,
+      name: user.name,
+      email: user.email,
       token,
-    };
+    });
   }
 }
 

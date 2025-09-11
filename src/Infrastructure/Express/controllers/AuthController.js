@@ -1,5 +1,3 @@
-// src/controllers/AuthController.js
-
 const RegisterUser = require("../../../Application/UserCases/Auth/RegisterUser");
 const LoginUser = require("../../../Application/UserCases/Auth/LoginUser");
 const RedisTokenBlacklistRepository = require("../../Persistence/Redis/RedisTokenBlacklistRepository");
@@ -18,19 +16,21 @@ class AuthController {
       }
 
       const registerUser = new RegisterUser();
-      const result = await registerUser.execute({ name, email, password });
+      const user = await registerUser.execute({ name, email, password });
+
+      
+      const token = JWTProvider.generateToken({ userId: user.id, email: user.email });
 
       res.status(201).json({
         status: "success",
         message: "Usuário registrado com sucesso",
-        user: result,
+        user: { ...user, token }, 
       });
     } catch (err) {
       next(err);
     }
   }
 
-  // Login do usuário
   static async login(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -43,19 +43,18 @@ class AuthController {
       }
 
       const loginUser = new LoginUser();
-      const result = await loginUser.execute({ email, password });
+      const userOutput = await loginUser.execute({ email, password });
 
       res.status(200).json({
         status: "success",
         message: "Login realizado com sucesso",
-        token: result.token, // supondo que o execute retorne { token }
+        user: userOutput.toJSON(), 
       });
     } catch (err) {
       next(err);
     }
   }
 
-  // Logout do usuário
   static async logout(req, res, next) {
     try {
       const authHeader = req.headers["authorization"];
@@ -66,7 +65,6 @@ class AuthController {
       }
 
       const token = authHeader.split(" ")[1];
-
       const decoded = JWTProvider.decodeToken(token);
       const expiresIn = decoded.exp * 1000 - Date.now();
 
