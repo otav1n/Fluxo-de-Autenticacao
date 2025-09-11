@@ -1,0 +1,14 @@
+version: '3.8' # Versão da sintaxe do Docker Compose
+
+services:
+  redis:
+    image: redis:latest # Usa a imagem oficial mais recente do Redis
+    container_name: my-redis-instance # Nome amigável para o seu contêiner
+    ports:
+      - "6379:6379" # Mapeia a porta 6379 do host para a porta 6379 do contêiner
+    volumes:
+      - redis_data:/data # Monta um volume persistente para os dados do Redis
+    command: redis-server --appendonly yes # Inicia o Redis com persistência AOF
+
+volumes:
+  redis_data: # Define o volume nomeado para persistência
