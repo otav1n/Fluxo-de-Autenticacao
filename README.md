@@ -2,13 +2,13 @@
 
 Este projeto implementa e integra o fluxo completo de autenticação na API, permitindo:
 
-Registro de usuários (POST /auth/register) com validação e persistência no PostgreSQL (via Sequelize).
+Registro de usuários (POST /api/register) com validação e persistência no PostgreSQL (via Sequelize).
 
-Login de usuários (POST /auth/login) com verificação de credenciais e geração de JWT assinado.
+Login de usuários (POST /api/login) com verificação de credenciais e geração de JWT assinado.
 
 Acesso a rotas protegidas via Bearer Token, validado em middleware dedicado.
 
-Logout seguro (POST /auth/logout) com gerenciamento de sessão no Redis, utilizando blacklist para tokens inválidos.
+Logout seguro (POST /api/logout) com gerenciamento de sessão no Redis, utilizando blacklist para tokens inválidos.
 
 # 🔑 Funcionalidades principais
 
